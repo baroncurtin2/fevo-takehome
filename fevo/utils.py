@@ -13,5 +13,5 @@ def get_api_key(api_key: str = None) -> str:
     return env_vars.get("API_KEY") or os.getenv("API_KEY") or None
 
 
-def parse_date_strings(date_str: str, date_format: str = "%Y-%m-%d") -> datetime:
-    return datetime.strptime(date_str, date_format)
+def parse_date_strings(date_str: str, date_format: str = "%Y-%m-%d") -> datetime | None:
+    return None if date_str is None else datetime.strptime(date_str, date_format)

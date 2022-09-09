@@ -1,12 +1,10 @@
 from datetime import datetime
 from typing import Type
 
-import requests
-
 from .exceptions import InvalidCameraException, InvalidQueryException
+from .response import MarsRoverPhotosResponse, NasaResponse
 from .restclient import RestClient
 from .utils import get_api_key
-from .response import NasaResponse, MarsRoverPhotosResponse
 
 CAMERAS = (
     "FHAZ",

@@ -1,5 +1,5 @@
 import logging
-from dataclasses import dataclass, field, InitVar
+from dataclasses import InitVar, dataclass, field
 
 import requests
 from requests.exceptions import HTTPError

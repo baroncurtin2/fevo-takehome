@@ -30,6 +30,10 @@ class MarsRoverPhotosResponse(NasaResponse):
     def process_response(self, response: requests.Response) -> list[Any]:
         photos = response.json()["photos"]
 
+        # empty photos
+        if len(photos) == 0:
+            return []
+
         if self.limit is not None:
             return self._limit_processor(photos)
 
