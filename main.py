@@ -10,12 +10,11 @@ def main(
     start_date: str = None,
     end_date: str = None,
     img_limit: int = 3,
-):
+) -> dict[str, list[str]]:
     client = NasaClient(api_key=api_key)
-    photos = get_day_range_photo_links(
+    return get_day_range_photo_links(
         client, rover, camera, start_date, end_date, img_limit
     )
-    return photos
 
 
 def get_days_photo_links(
@@ -61,4 +60,8 @@ def get_day_range_photo_links(
 
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
-    photos = main(api_key="qZ5V1pMbsXhQbaa8y5ixnOhAbTpHN695Jd4yfnTU", start_date="2022-01-01", img_limit=3)
+    photos = main(
+        api_key="qZ5V1pMbsXhQbaa8y5ixnOhAbTpHN695Jd4yfnTU",
+        start_date="2022-01-01",
+        img_limit=3,
+    )
