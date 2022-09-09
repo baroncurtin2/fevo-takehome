@@ -1,10 +1,12 @@
 from datetime import datetime
+from typing import Type
 
 import requests
 
 from .exceptions import InvalidCameraException, InvalidQueryException
 from .restclient import RestClient
 from .utils import get_api_key
+from .response import NasaResponse, MarsRoverPhotosResponse
 
 CAMERAS = (
     "FHAZ",
@@ -40,7 +42,8 @@ class NasaClient(RestClient):
         rover: str = "curiosity",
         camera: str = "ALL",
         page: int = 1,
-    ) -> requests.Response:
+        photo_limit: int = None,
+    ) -> Type[NasaResponse]:
         # validation checks
         if camera not in CAMERAS:
             raise InvalidCameraException(camera, CAMERAS)
@@ -66,11 +69,26 @@ class NasaClient(RestClient):
         elif earth_date is not None:
             self.update_params({"earth_date": parse_earth_date(earth_date)})
 
+        # create target key for caching
+        target_key = hash((rover, sol, earth_date, camera))
+
+        # return from cache if exists
+        if target_key in self.cache_strategy.cache:
+            return self.cache_strategy.cache[target_key]
+
+
+        # process response
         response = self.get(endpoint_url)
+        processed_response = MarsRoverPhotosResponse(
+            response=response, limit=photo_limit
+        )
+
+        # save to cache
+        self.cache_strategy.save(target_key, processed_response)
 
         # adjust limit_remaining
         self.limit_remaining = int(response.headers["X-RateLimit-Remaining"])
-        return response
+        return processed_response
 
     def curiosity_photos(
         self,
@@ -78,7 +96,7 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
-    ) -> requests.Response:
+    ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
             earth_date=earth_date, sol=sol, rover="curiosity", camera=camera, page=page
         )
@@ -89,7 +107,7 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
-    ) -> requests.Response:
+    ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
             earth_date=earth_date,
             sol=sol,
@@ -104,7 +122,7 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
-    ) -> requests.Response:
+    ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
             earth_date=earth_date,
             sol=sol,

@@ -1,7 +1,7 @@
 import os
+from datetime import datetime
 
 from dotenv import dotenv_values
-from datetime import datetime
 
 
 def get_api_key(api_key: str = None) -> str:

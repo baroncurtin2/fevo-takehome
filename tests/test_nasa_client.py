@@ -29,4 +29,4 @@ def test_get_curiosity_photos(earth_date):
 
     response = client.curiosity_photos(earth_date=earth_date)
 
-    assert len(response.json()["photos"]) == 4
+    assert len(response) == 4

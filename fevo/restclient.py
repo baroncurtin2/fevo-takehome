@@ -1,8 +1,10 @@
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 import requests
 from requests.exceptions import HTTPError
+
+from .cache import CachingStrategy, STRATEGIES
 
 
 class RestClientError(Exception):
@@ -13,11 +15,16 @@ class RestClientError(Exception):
 
 @dataclass
 class RestClient:
+    cache_type: InitVar[str] = "dict"
     base_url: str = ""
     api_key: str | None = None
     headers: dict = field(default_factory=dict)
     params: dict = field(default_factory=dict)
     session: requests.Session = field(default_factory=requests.Session)
+    cache_strategy: CachingStrategy = field(init=False)
+
+    def __post_init__(self, cache_type: str = "dict"):
+        self.cache_strategy = STRATEGIES.get(cache_type)()
 
     def _request(self, method: str, url: str, **kwargs) -> requests.Response:
         response = self.session.request(
