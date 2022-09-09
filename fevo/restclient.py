@@ -22,9 +22,11 @@ class RestClient:
     params: dict = field(default_factory=dict)
     session: requests.Session = field(default_factory=requests.Session)
     cache_strategy: CachingStrategy = field(init=False)
+    logger: logging.Logger = field(init=False)
 
     def __post_init__(self, cache_type: str = "dict"):
         self.cache_strategy = STRATEGIES.get(cache_type)()
+        self.logger = logging.getLogger(__name__)
 
     def _request(self, method: str, url: str, **kwargs) -> requests.Response:
         response = self.session.request(

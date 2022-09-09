@@ -24,7 +24,7 @@ def get_days_photo_links(
     earth_date: str | datetime.datetime,
     img_limit: int,
 ) -> list[str]:
-    response = client.mars_rover_photos(
+    response, _ = client.mars_rover_photos(
         earth_date=earth_date, rover=rover, camera=camera, photo_limit=img_limit
     )
     return response.data
@@ -65,3 +65,4 @@ if __name__ == "__main__":
         start_date="2022-01-01",
         img_limit=3,
     )
+    print(photos)

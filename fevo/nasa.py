@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Type
 
@@ -41,7 +42,7 @@ class NasaClient(RestClient):
         camera: str = "ALL",
         page: int = 1,
         photo_limit: int = None,
-    ) -> Type[NasaResponse]:
+    ) -> (Type[NasaResponse], bool):
         # validation checks
         if camera not in CAMERAS:
             raise InvalidCameraException(camera, CAMERAS)
@@ -72,7 +73,8 @@ class NasaClient(RestClient):
 
         # return from cache if exists
         if target_key in self.cache_strategy.cache:
-            return self.cache_strategy.cache[target_key]
+            self.logger.info("Returning from cache")
+            return self.cache_strategy.cache[target_key], True
 
         # process response
         response = self.get(endpoint_url)
@@ -85,7 +87,7 @@ class NasaClient(RestClient):
 
         # adjust limit_remaining
         self.limit_remaining = int(response.headers["X-RateLimit-Remaining"])
-        return processed_response
+        return processed_response, False
 
     def curiosity_photos(
         self,
@@ -94,7 +96,7 @@ class NasaClient(RestClient):
         camera: str = "ALL",
         page: int = 1,
         **kwargs,
-    ) -> Type[NasaResponse]:
+    ) -> (Type[NasaResponse], bool):
         return self.mars_rover_photos(
             earth_date=earth_date,
             sol=sol,
@@ -111,7 +113,7 @@ class NasaClient(RestClient):
         camera: str = "ALL",
         page: int = 1,
         **kwargs,
-    ) -> Type[NasaResponse]:
+    ) -> (Type[NasaResponse], bool):
         return self.mars_rover_photos(
             earth_date=earth_date,
             sol=sol,
@@ -128,7 +130,7 @@ class NasaClient(RestClient):
         camera: str = "ALL",
         page: int = 1,
         **kwargs,
-    ) -> Type[NasaResponse]:
+    ) -> (Type[NasaResponse], bool):
         return self.mars_rover_photos(
             earth_date=earth_date,
             sol=sol,
