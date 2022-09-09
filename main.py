@@ -1,8 +1,33 @@
 #!/usr/bin/env python3
 
+import argparse
 import datetime
 
 from fevo import NasaClient, parse_date_strings
+
+parser = argparse.ArgumentParser(prog="mars", description="Get Mars rover photo links")
+parser.add_argument("-k", "--key", type=str, dest="api_key", default="DEMO_KEY")
+parser.add_argument(
+    "-r", "--rover", type=str, help="Rover name", dest="rover", default="curiosity"
+)
+parser.add_argument(
+    "-c", "--camera", type=str, help="Camera name", dest="camera", default="ALL"
+)
+parser.add_argument(
+    "-sd",
+    "--start-date",
+    type=str,
+    help="Start date",
+    dest="start_date",
+    default="2015-06-03",
+)
+parser.add_argument("-ed", "--end-date", type=str, help="End date", dest="end_date")
+parser.add_argument(
+    "-lim", "--img-limit", type=int, help="Image limit", dest="img_limit", default=3
+)
+
+args = parser.parse_args()
+print(vars(args))
 
 
 def main(
@@ -12,6 +37,7 @@ def main(
     start_date: str = None,
     end_date: str = None,
     img_limit: int = 3,
+    **kwargs
 ) -> dict[str, list[str]]:
     client = NasaClient(api_key=api_key)
     return get_day_range_photo_links(
@@ -62,9 +88,5 @@ def get_day_range_photo_links(
 
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
-    photos = main(
-        api_key="qZ5V1pMbsXhQbaa8y5ixnOhAbTpHN695Jd4yfnTU",
-        start_date="2022-01-01",
-        img_limit=3,
-    )
+    photos = main(**vars(args))
     print(photos)
