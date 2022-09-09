@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import datetime
 
 from fevo import NasaClient, parse_date_strings
