@@ -76,7 +76,6 @@ class NasaClient(RestClient):
         if target_key in self.cache_strategy.cache:
             return self.cache_strategy.cache[target_key]
 
-
         # process response
         response = self.get(endpoint_url)
         processed_response = MarsRoverPhotosResponse(
@@ -96,9 +95,15 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
+        **kwargs,
     ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
-            earth_date=earth_date, sol=sol, rover="curiosity", camera=camera, page=page
+            earth_date=earth_date,
+            sol=sol,
+            rover="curiosity",
+            camera=camera,
+            page=page,
+            **kwargs,
         )
 
     def opportunity_photos(
@@ -107,6 +112,7 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
+        **kwargs,
     ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
             earth_date=earth_date,
@@ -114,6 +120,7 @@ class NasaClient(RestClient):
             rover="opportunity",
             camera=camera,
             page=page,
+            **kwargs,
         )
 
     def spirit_photos(
@@ -122,6 +129,7 @@ class NasaClient(RestClient):
         sol: int = None,
         camera: str = "ALL",
         page: int = 1,
+        **kwargs,
     ) -> Type[NasaResponse]:
         return self.mars_rover_photos(
             earth_date=earth_date,
@@ -129,6 +137,7 @@ class NasaClient(RestClient):
             rover="spirit",
             camera=camera,
             page=page,
+            **kwargs,
         )
 
 
